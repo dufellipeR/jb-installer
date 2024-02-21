@@ -1,0 +1,12 @@
+{
+  "ttype":"Application",
+  "name":"IntelliJ IDEA",
+  "comment":"the Leading Java and Kotlin IDE",
+  "categories":"Development;IDE;",
+  "terminal":false,
+  "startup":"jetbrains-idea",
+  "short_name": "idea",
+  "exec": "",
+  "version": "",
+  "icon": ""
+}

@@ -1,0 +1,12 @@
+{
+  "ttype":"Application",
+  "name":"GoLand",
+  "comment":"The complete IDE crafted for Gophers",
+  "categories":"Development;IDE;",
+  "terminal":false,
+  "startup":"jetbrains-goland",
+  "short_name": "goland",
+  "exec": "",
+  "version": "",
+  "icon": ""
+}

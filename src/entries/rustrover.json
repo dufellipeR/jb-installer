@@ -1,0 +1,12 @@
+{
+  "ttype":"Application",
+  "name":"Rust Rover",
+  "comment":"Focus on what matters",
+  "categories":"Development;IDE;",
+  "terminal":false,
+  "startup":"jetbrains-rust-rover",
+  "short_name": "rover",
+  "exec": "",
+  "version": "",
+  "icon": ""
+}
