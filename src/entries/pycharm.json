@@ -1,10 +1,6 @@
 {
-  "ttype":"Application",
   "name":"PyCharm",
   "comment":"The Python IDE for Professional Developers",
-  "categories":"Development;IDE;",
-  "terminal":false,
-  "startup":"jetbrains-pycharm",
   "short_name": "pycharm",
   "exec": "",
   "version": "",

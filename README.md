@@ -1,3 +1,8 @@
+    
+    MKT
+    - Compare speed to install using the application and doing 
+        it manually: "This tool reduced 90% of time spent installing the IDE manually"
+
     TODO
         - Separate into modules
         - Write Tests
@@ -16,5 +21,27 @@
         - Argument to change default JetBrains folder path
         - Flag to set if creates or not symlink
         - Flag to open IDE after installation
-    
-    
+
+
+// fn create_resume_operations(ide: &Ide){
+//     /*
+//        {IDE NAME}
+//
+//        Main folder step:
+//             - created JetBrains folder
+//             - skipped JetBrains folder
+//             - failed to create JetBrains folder
+//
+//        Unpack IDE step:
+//             - unpacked into JetBrains folder
+//             - failed to unpack
+//
+//        Symlink step:
+//             - symlink created
+//             - failed to create symlink
+//
+//        Entry step:
+//             - Entry successfully created
+//
+//     */
+// }

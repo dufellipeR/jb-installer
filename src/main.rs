@@ -1,10 +1,10 @@
 use core::panic;
 use std::fs::{self, File};
-use std::io::{self, BufReader, ErrorKind, Write};
+use std::io::{self, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 use std::time::{Instant};
 
-use std::os::unix::fs::symlink;
+use std::process;
 
 use clap::Parser;
 use flate2::read::GzDecoder;
@@ -13,33 +13,24 @@ use tar::Archive;
 use serde::{Deserialize, Serialize};
 
 use sudo::{check, RunningAs};
+use jb_installer::Ide;
 
 #[derive(Parser)]
 struct Cli {
     zip_path: PathBuf
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct Ide {
-    name: String,
-    comment: String,
-    ttype: String,
-    categories: String,
-    terminal: bool,
-    startup: String,
-    icon: String,
-    exec: String,
-    version: String,
-    short_name: String,
-}
-
 
 fn main() -> io::Result<()>{
     let args = Cli::parse();
 
+    // checking privileges
     match check() {
         RunningAs::Root => {},
-        _ => panic!("The application needs SUDO permission to work properly\nTry running with \"sudo\" command"),
+        _ => {
+            println!("The application needs SUDO permission to work properly\nTry running with \"sudo\" command");
+            process::exit(1);
+        },
     }
 
     let default_path = Path::new("/opt/jetbrains");
@@ -48,24 +39,34 @@ fn main() -> io::Result<()>{
 
     let archive_name = unpack_tar(&args.zip_path, &default_path)?;
 
-    let ide = build_ide(&archive_name, &default_path)?;
+    Ide::build(&archive_name, &default_path).unwrap_or_else(|err| {
+        println!("Some error occurred {err} when trying to build IDE");
+        process::exit(1)
+    });
 
-    create_symlink(&ide)?;
+    Ide::create_symlink().unwrap_or_else(|err| {
+        println!("Some error occurred {err} when trying to create symlink")
+    });
 
-    create_desktop_entry(&ide)?;
+    Ide::create_entry().unwrap_or_else(|err| {
+        println!("Some error occurred {err}");
+        process::exit(1)
+    });
 
     Ok(())
 }
 
-fn create_directory(default_path: &Path){
+fn create_directory(default_path: &Path) -> Result<(), &'static str>{
     match fs::create_dir(&default_path) {
         Ok(_) => { println!("> ✅ successfully created JetBrains directory") }
         Err(error) => match error.kind() {
             ErrorKind::AlreadyExists => println!("> skipping directory creation..."),
             ErrorKind::PermissionDenied => panic!("> no permission to create directory at {:?}, try running with \"sudo\"", default_path),
-            _err => panic!("> unknown error: {_err}")
+            _err => return Err("> unknown error when creating main directory")
         },
     };
+
+    Ok(())
 }
 
 fn unpack_tar(file_path: &PathBuf, dest_path: &Path) -> Result<String, io::Error>{
@@ -101,95 +102,17 @@ fn unpack_tar(file_path: &PathBuf, dest_path: &Path) -> Result<String, io::Error
     Ok(ide_dir_name)
 }
 
-fn detect_ide(archive_name: &str) -> Result<(String, String), io::Error> {
-    let parts: Vec<&str> = archive_name.split("-").collect();
-    let version = parts[parts.len() - 1].replace("/", "");
 
-    let normalized_archive = archive_name.to_lowercase();
-    let short_name: String;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    if normalized_archive.contains("go") {
-        short_name = String::from("goland")
-    } else if normalized_archive.contains("py") {
-        short_name = String::from("pycharm")
-    } else if normalized_archive.contains("rust") {
-        short_name = String::from("rustrover")
-    } else if normalized_archive.contains("idea") {
-        short_name = String::from("idea")
-    } else {
-        panic!("> IDE not supported, symbolic link and desktop entry NOT created")
+    #[test]
+    fn is_detecting_ides(){
+        assert_eq!((String::from("rustrover"), String::from("1.0")), Ide::detect_ide("RustRover-1.0").unwrap());
+        assert_eq!((String::from("goland"), String::from("1.0")), Ide::detect_ide("GoLand-1.0").unwrap());
+        assert_eq!((String::from("idea"), String::from("1.0")), Ide::detect_ide("idea-IU-1.0").unwrap());
+        assert_eq!((String::from("pycharm"), String::from("1.0")), Ide::detect_ide("PyCharm-1.0").unwrap());
+        assert!(Ide::detect_ide("unknown-ide").is_err());
     }
-    return Ok((short_name, String::from(version)))
 }
-
-fn build_ide(archive_name: &str, main_dir_path: &Path) -> Result<Ide, io::Error > {
-    let ide_details = detect_ide(archive_name)?;
-
-    let format_path = format!("src/entries/{}.json", ide_details.0);
-    let path = Path::new(&format_path);
-    let file = File::open(path)?;
-    let reader = BufReader::new(file);
-    let mut parsed_ide: Ide = serde_json::from_reader(reader).expect("Failed to parse JSON");
-
-    parsed_ide.icon = format!("{}/{}bin/{}.png", main_dir_path.display(), archive_name, ide_details.0);
-    parsed_ide.exec = format!("{}/{}bin/{}.sh", main_dir_path.display(), archive_name, ide_details.0);
-    parsed_ide.version = ide_details.1;
-
-    return Ok(parsed_ide);
-}
-
-fn create_symlink(ide: &Ide) -> Result<(), io::Error>{
-    match symlink(&ide.exec, format!("/usr/local/bin/{}", &ide.short_name)) {
-        Ok(_) => { println!("> ✅ successfully created symbolic link") }
-        Err(err) => match err.kind() {
-            ErrorKind::AlreadyExists => println!("> skipping symlink creation..."),
-            ErrorKind::PermissionDenied => {
-                println!("> no permission to create symlink, try running with \"sudo\"");
-                println!("> skipping symlink creation...");
-            }
-            error => panic!("> unknown error: {error}")
-        }
-    }
-
-    Ok(())
-}
-
-fn create_desktop_entry(ide: &Ide) -> Result<(), io::Error>{
-    let filename = format!("/usr/share/applications/{}.desktop", ide.short_name);
-    let mut file = File::create(filename)?;
-
-    //creating and formatting entry content
-    let entry = format!("[Desktop Entry]\nVersion={}\nType=Application\nName={}\nIcon={}\
-    \nExec={}\nComment={}\nCategories=Development;IDE;\nTerminal=false\nStartupWMClass=jetbrains-{}"
-                        , ide.version, ide.name, ide.icon, ide.exec, ide.comment, ide.short_name);
-
-    match file.write_all(entry.as_ref()) {
-        Ok(_) => println!("> ✅ successfully created desktop entry"),
-        Err(e) => panic!("> unexpected error {e}")
-    };
-
-    Ok(())
-}
-
-// fn create_resume_operations(ide: &Ide){
-//     /*
-//        {IDE NAME}
-//
-//        Main folder step:
-//             - created JetBrains folder
-//             - skipped JetBrains folder
-//             - failed to create JetBrains folder
-//
-//        Unpack IDE step:
-//             - unpacked into JetBrains folder
-//             - failed to unpack
-//
-//        Symlink step:
-//             - symlink created
-//             - failed to create symlink
-//
-//        Entry step:
-//             - Entry successfully created
-//
-//     */
-// }
