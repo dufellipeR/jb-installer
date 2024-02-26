@@ -22,26 +22,4 @@
         - Flag to set if creates or not symlink
         - Flag to open IDE after installation
 
-
-// fn create_resume_operations(ide: &Ide){
-//     /*
-//        {IDE NAME}
-//
-//        Main folder step:
-//             - created JetBrains folder
-//             - skipped JetBrains folder
-//             - failed to create JetBrains folder
-//
-//        Unpack IDE step:
-//             - unpacked into JetBrains folder
-//             - failed to unpack
-//
-//        Symlink step:
-//             - symlink created
-//             - failed to create symlink
-//
-//        Entry step:
-//             - Entry successfully created
-//
-//     */
-// }
+    - Add support to other JetBrains IDE's

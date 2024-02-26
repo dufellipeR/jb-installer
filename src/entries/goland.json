@@ -4,5 +4,6 @@
   "short_name": "goland",
   "exec": "",
   "version": "",
-  "icon": ""
+  "icon": "",
+  "hex_color": "0x7145fa"
 }

@@ -13,3 +13,4 @@ spinoff = "0.8.0"
 tar = { version = "0.4.40" }
 serde = { version = "1.0.197", features = ["derive"] }
 sudo = "0.6.0"
+recolored = "1.9.3"

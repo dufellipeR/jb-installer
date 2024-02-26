@@ -1,11 +1,11 @@
 use std::io::{self};
-use std::path::{Path, PathBuf};
-
+use std::path::{PathBuf};
 use std::process;
 
 use clap::Parser;
-
+use recolored::Colorize;
 use sudo::{check, RunningAs};
+
 use painite::{create_directory, Ide, unpack_tar};
 
 #[derive(Parser)]
@@ -16,6 +16,9 @@ struct Cli {
 fn main() -> io::Result<()>{
     let args = Cli::parse();
 
+    // welcome message
+    greeting();
+
     // checking privileges
     match check() {
         RunningAs::Root => {},
@@ -25,31 +28,40 @@ fn main() -> io::Result<()>{
         },
     }
 
-    let default_path = Path::new("/opt/JetBrains");
+    let default_jetbrains_path_directory = "/opt/JetBrains";
+    let default_symlink_path = "/usr/local/bin/";
+    let default_entry_path = "/usr/share/applications/";
 
-    create_directory(&default_path).unwrap_or_else(|err| {
+    create_directory(&default_jetbrains_path_directory).unwrap_or_else(|err| {
         println!("Unexpected error occurred {err} when trying to create directory");
         process::exit(1)
     });
 
-    let archive_name = unpack_tar(&args.zip_path, &default_path)?;
+    let archive_name = unpack_tar(&args.zip_path, &default_jetbrains_path_directory)?;
 
     let mut ide = Ide::new();
 
-    Ide::build(&mut ide, &archive_name, &default_path).unwrap_or_else(|err| {
-        println!("Unexpected error occurred {err} when trying to build IDE");
+    ide.build(&archive_name, &default_jetbrains_path_directory).unwrap_or_else(|err| {
+        println!("> Unexpected error occurred {err} when trying to build IDE");
         process::exit(1)
     });
 
-    Ide::create_symlink(&ide).unwrap_or_else(|err| {
-        println!("Some error occurred {err} when trying to create symlink")
+    ide.create_symlink(default_symlink_path).unwrap_or_else(|err| {
+        println!("> Unexpected error occurred {err} when trying to create symlink");
     });
 
-    Ide::create_entry(&ide).unwrap_or_else(|err| {
-        println!("Some error occurred {err}");
+    ide.create_entry(default_entry_path).unwrap_or_else(|err| {
+        println!("> Unexpected error occurred {err} when trying to create entry");
         process::exit(1)
     });
+
+    println!("-----------------------------------------------");
+    println!("> {} {} installed", &ide.get_name().hex_color(0xc7059c), "successfully".green());
 
     Ok(())
+}
+
+fn greeting() {
+    println!("> Welcome to {}", "Painite".true_color(128, 0,0).bold())
 }
 

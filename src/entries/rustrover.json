@@ -4,5 +4,6 @@
   "short_name": "rover",
   "exec": "",
   "version": "",
-  "icon": ""
+  "icon": "",
+  "hex_color": "0xff5c00"
 }

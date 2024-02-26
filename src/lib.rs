@@ -4,6 +4,7 @@ use std::os::unix::fs::symlink;
 use std::path::{Path, PathBuf};
 use std::{fs, io, process};
 use std::time::Instant;
+use recolored::Colorize;
 use flate2::read::GzDecoder;
 use serde::{Deserialize, Serialize};
 use spinoff::{Color, Spinner, spinners};
@@ -31,7 +32,12 @@ impl Ide {
             short_name: String::new(),
         }
     }
-    pub fn build(&mut self, archive_name: &str, main_dir_path: &Path) -> Result<(), &'static str> {
+
+    pub fn get_name(&self) -> &String {
+        &self.name
+    }
+
+    pub fn build(&mut self, archive_name: &str, main_dir_path: &str) -> Result<(), &'static str> {
         let ide_details = Self::detect_ide(archive_name).unwrap_or_else(|error| {
             println!("{}", error);
             process::exit(1)
@@ -51,8 +57,8 @@ impl Ide {
 
         self.name = parsed_ide.name;
         self.comment = parsed_ide.comment;
-        self.icon = format!("{}/{}bin/{}.png", main_dir_path.display(), archive_name, self.short_name);
-        self.exec = format!("{}/{}bin/{}.sh", main_dir_path.display(), archive_name, self.short_name);
+        self.icon = format!("{}/{}bin/{}.png", main_dir_path, archive_name, self.short_name);
+        self.exec = format!("{}/{}bin/{}.sh", main_dir_path, archive_name, self.short_name);
 
         Ok(())
     }
@@ -79,14 +85,15 @@ impl Ide {
         Ok((String::from(short_name), String::from(version)))
     }
 
-    pub fn create_symlink(&self) -> Result<(), &'static str>{
-        match symlink(&self.exec, format!("/usr/local/bin/{}", self.short_name)) {
-            Ok(_) => println!("> ✅ successfully created symbolic link"),
+    pub fn create_symlink(&self, default_symlink: &str) -> Result<(), &'static str>{
+        let path = format!("{}{}", default_symlink, self.short_name);
+        match symlink(&self.exec, &path) {
+            Ok(_) => println!("> ✅ {} created symbolic link", "successfully".green()),
             Err(err) => match err.kind() {
                 ErrorKind::AlreadyExists => println!("> skipping symlink creation..."),
                 ErrorKind::PermissionDenied => {
                     println!("> no permission to create symlink, try running with \"sudo\"");
-                    println!("> skipping symlink creation...");
+                    println!("> ✅ skipping symlink creation...");
                 }
                 _err => return Err("> unknown error when creating symlink")
             }
@@ -95,9 +102,9 @@ impl Ide {
         Ok(())
     }
 
-    pub fn create_entry(&self) -> Result<(), &'static str>{
-        let filename = format!("/usr/share/applications/{}.desktop", self.short_name);
-        let mut file = File::create(filename).unwrap_or_else(|err| {
+    pub fn create_entry(&self, default_entry_path: &str) -> Result<(), &'static str>{
+        let filename = format!("{}{}.desktop", default_entry_path, self.short_name);
+        let mut file = File::create(&filename).unwrap_or_else(|err| {
             println!("> unexpected error occurred {err}");
             process::exit(1)
         });
@@ -108,7 +115,7 @@ impl Ide {
                             , self.version, self.name, self.icon, self.exec, self.comment, self.short_name);
 
         match file.write_all(entry.as_ref()) {
-            Ok(_) => println!("> ✅ successfully created desktop entry"),
+            Ok(_) => println!("> ✅ {} created desktop entry", "successfully".green()),
             Err(_) => return Err("> unexpected error when writing IDE entry")
         };
 
@@ -116,11 +123,11 @@ impl Ide {
     }
 }
 
-pub fn create_directory(default_path: &Path) -> Result<(), &'static str>{
+pub fn create_directory(default_path: &str) -> Result<(), &'static str>{
     match fs::create_dir(&default_path) {
-        Ok(_) => { println!("> ✅ successfully created JetBrains directory") }
+        Ok(_) => { println!("> ✅ {} created JetBrains directory", "successfully".green()) }
         Err(error) => match error.kind() {
-            ErrorKind::AlreadyExists => println!("> skipping directory creation..."),
+            ErrorKind::AlreadyExists => println!("> ✅ skipping directory creation..."),
             ErrorKind::PermissionDenied => return Err("> no permission to create directory, try running with \"sudo\""),
             _err => return Err("> unknown error when creating main directory")
         },
@@ -129,7 +136,7 @@ pub fn create_directory(default_path: &Path) -> Result<(), &'static str>{
     Ok(())
 }
 
-pub fn unpack_tar(file_path: &PathBuf, default_path: &Path) -> Result<String, io::Error>{
+pub fn unpack_tar(file_path: &PathBuf, default_path: &str) -> Result<String, io::Error>{
     let start: Instant = Instant::now();
     let mut spinner = Spinner::new(spinners::Binary, "extracting files...", Color::Green);
 
@@ -157,7 +164,7 @@ pub fn unpack_tar(file_path: &PathBuf, default_path: &Path) -> Result<String, io
             break; // Exit loop after getting the first entry
         }
     };
-    spinner.stop_with_message(&*format!("> ✅ successfully unpacked IDE, took {:?}", start.elapsed()));
+    spinner.stop_with_message(&*format!("> ✅ {} unpacked IDE, took {:?}", "successfully".green(), start.elapsed()));
 
     Ok(ide_dir_name)
 }
@@ -166,49 +173,89 @@ pub fn unpack_tar(file_path: &PathBuf, default_path: &Path) -> Result<String, io
 mod tests {
     use super::*;
 
-    // Test all functions
+    #[test]
+    fn it_successfully_returns_name() {
+        let archive_name = "RustRover-2023.0.1/";
+        let path = "/opt/JetBrains";
+        let mut ide = Ide::new();
 
-    // #[test]
-    // fn is_building_ides() {
-    //     let archive_name = "RustRover-2023.0.1/";
-    //     let path = Path::new("/opt/JetBrains");
-    //     let mut ide = Ide::new();
-    //
-    //     assert!(Ide::build(&mut ide, archive_name, path).is_ok());
-    //     assert_eq!(ide.short_name, "rustrover");
-    //     assert_eq!(ide.exec, "/opt/JetBrains/RustRover-2023.0.1/bin/rustrover.sh");
-    //     assert_eq!(ide.icon, "/opt/JetBrains/RustRover-2023.0.1/bin/rustrover.png");
-    //
-    // }
-    //
-    // #[test]
-    // fn is_creating_symlink {
-    //
-    // }
+        assert!(&ide.build(archive_name, path).is_ok());
+        assert_eq!("Rust Rover", &ide.get_name().to_owned());
+    }
+    #[test]
+    fn it_successfully_build_rustrover() {
+        let archive_name = "RustRover-2023.0.1/";
+        let path = "/opt/JetBrains";
+        let mut ide = Ide::new();
 
+        assert!(&ide.build(archive_name, path).is_ok());
+        assert_eq!(ide.short_name, "rustrover");
+        assert_eq!(ide.exec, "/opt/JetBrains/RustRover-2023.0.1/bin/rustrover.sh");
+        assert_eq!(ide.icon, "/opt/JetBrains/RustRover-2023.0.1/bin/rustrover.png");
+
+    }
 
     #[test]
-    fn test_successfully_detect_rustrover(){
+    fn it_successfully_build_idea() {
+        let archive_name = "idea-IU-2023.0.1/";
+        let path = "/opt/JetBrains";
+        let mut ide = Ide::new();
+
+        assert!(&ide.build(archive_name, path).is_ok());
+        assert_eq!(ide.short_name, "idea");
+        assert_eq!(ide.exec, "/opt/JetBrains/idea-IU-2023.0.1/bin/idea.sh");
+        assert_eq!(ide.icon, "/opt/JetBrains/idea-IU-2023.0.1/bin/idea.png");
+
+    }
+
+    #[test]
+    fn it_successfully_build_pycharm() {
+        let archive_name = "PyCharm-2023.0.1/";
+        let path = "/opt/JetBrains";
+        let mut ide = Ide::new();
+
+        assert!(&ide.build(archive_name, path).is_ok());
+        assert_eq!(ide.short_name, "pycharm");
+        assert_eq!(ide.exec, "/opt/JetBrains/PyCharm-2023.0.1/bin/pycharm.sh");
+        assert_eq!(ide.icon, "/opt/JetBrains/PyCharm-2023.0.1/bin/pycharm.png");
+
+    }
+
+    #[test]
+    fn it_successfully_build_goland() {
+        let archive_name = "GoLand-2023.0.1/";
+        let path = "/opt/JetBrains";
+        let mut ide = Ide::new();
+
+        assert!(&ide.build(archive_name, path).is_ok());
+        assert_eq!(ide.short_name, "goland");
+        assert_eq!(ide.exec, "/opt/JetBrains/GoLand-2023.0.1/bin/goland.sh");
+        assert_eq!(ide.icon, "/opt/JetBrains/GoLand-2023.0.1/bin/goland.png");
+
+    }
+
+    #[test]
+    fn it_successfully_detect_rustrover(){
         assert_eq!((String::from("rustrover"), String::from("1.0")), Ide::detect_ide("RustRover-1.0").unwrap());
     }
 
     #[test]
-    fn test_successfully_detect_idea(){
+    fn it_successfully_detect_idea(){
         assert_eq!((String::from("idea"), String::from("1.0")), Ide::detect_ide("Idea-IU-1.0").unwrap());
     }
 
     #[test]
-    fn test_successfully_detect_goland(){
+    fn it_successfully_detect_goland(){
         assert_eq!((String::from("goland"), String::from("1.0")), Ide::detect_ide("GoLand-1.0").unwrap());
     }
 
     #[test]
-    fn test_successfully_detect_pycharm(){
+    fn it_successfully_detect_pycharm(){
         assert_eq!((String::from("pycharm"), String::from("1.0")), Ide::detect_ide("PyCharm-1.0").unwrap());
     }
 
     #[test]
-    fn test_unknown_ide(){
+    fn it_throws_error_unknown_ide(){
         assert!(Ide::detect_ide("unknown-ide").is_err());
     }
 }
