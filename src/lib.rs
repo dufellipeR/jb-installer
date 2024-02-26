@@ -50,7 +50,7 @@ impl Ide {
         let path = Path::new(&format_path);
         let file = match File::open(path) {
             Ok(file) => file,
-            Err(_) => return Err("No entries found for this IDE")
+            Err(err) => panic!("{}", err)
         };
         let reader = BufReader::new(file);
         let parsed_ide: Ide = serde_json::from_reader(reader).expect("Failed to parse JSON");
@@ -90,7 +90,7 @@ impl Ide {
         match symlink(&self.exec, &path) {
             Ok(_) => println!("> ✅ {} created symbolic link", "successfully".green()),
             Err(err) => match err.kind() {
-                ErrorKind::AlreadyExists => println!("> skipping symlink creation..."),
+                ErrorKind::AlreadyExists => println!("> ✅ skipping symlink creation..."),
                 ErrorKind::PermissionDenied => {
                     println!("> no permission to create symlink, try running with \"sudo\"");
                     println!("> ✅ skipping symlink creation...");
@@ -138,6 +138,7 @@ pub fn create_directory(default_path: &str) -> Result<(), &'static str>{
 
 pub fn unpack_tar(file_path: &PathBuf, default_path: &str) -> Result<String, io::Error>{
     let start: Instant = Instant::now();
+    print!("> ");
     let mut spinner = Spinner::new(spinners::Binary, "extracting files...", Color::Green);
 
     let file = File::open(file_path)?;

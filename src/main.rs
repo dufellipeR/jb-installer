@@ -62,6 +62,6 @@ fn main() -> io::Result<()>{
 }
 
 fn greeting() {
-    println!("> Welcome to {}", "Painite".true_color(128, 0,0).bold())
+    println!("> Welcome to {} !", "Painite".true_color(128, 0,0).bold())
 }
 
