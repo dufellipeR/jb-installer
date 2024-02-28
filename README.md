@@ -1,25 +1,48 @@
-    
-    MKT
-    - Compare speed to install using the application and doing 
-        it manually: "This tool reduced 90% of time spent installing the IDE manually"
 
-    TODO
-        - Separate into modules
-        - Write Tests
+![Logo]()
 
-    ## V1
 
-    - Create jetbrains main dir at /op/
-    - Unzip IDE into jetbrains main dir
-    - Create symlink to enable the IDE to be called through CLI
-    - Create the desktop entry file
-    - Resume of operations
+# Painite
 
-    ## V2
-    
-    - Flags and Arguments:
-        - Argument to change default JetBrains folder path
-        - Flag to set if creates or not symlink
-        - Flag to open IDE after installation
+A cli tool that installs tar.gz JetBrains IDEs into Linux
 
-    - Add support to other JetBrains IDE's
+
+## Features
+
+- Unpack .tar.gz files
+- Create symbolic link
+- Create destktop entry
+
+
+## Installation
+
+Install my-project with npm
+
+```bash
+  npm install my-project
+  cd my-project
+```
+
+## Usage/Examples
+
+```bash
+sudo painite <gz_file_path>
+
+> Welcome to Painite !
+> ✅ successfully created JetBrains directory
+> ✅ successfully unpacked IDE, took 109.65s
+> ✅ successfully created symbolic link
+> ✅ successfully created desktop entry
+-----------------------------------------------
+> IntelliJ IDEA successfully installed
+```
+
+
+## Contributing
+
+Contributions are always welcome!
+
+See `contributing.md` for ways to get started.
+
+Please adhere to this project's `code of conduct`.
+

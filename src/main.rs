@@ -10,7 +10,7 @@ use painite::{create_directory, Ide, unpack_tar};
 
 #[derive(Parser)]
 struct Cli {
-    zip_path: PathBuf
+    gz_path: PathBuf
 }
 
 fn main() -> io::Result<()>{
@@ -37,7 +37,7 @@ fn main() -> io::Result<()>{
         process::exit(1)
     });
 
-    let archive_name = unpack_tar(&args.zip_path, &default_jetbrains_path_directory)?;
+    let archive_name = unpack_tar(&args.gz_path, &default_jetbrains_path_directory)?;
 
     let mut ide = Ide::new();
 
