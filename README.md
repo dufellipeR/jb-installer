@@ -1,6 +1,6 @@
 <div align="center">
 
-![Logo](/assets/painiteII.png)
+![Logo](/assets/painiteIII.png)
 
 </div>
 
