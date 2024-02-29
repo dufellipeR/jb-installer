@@ -14,3 +14,4 @@ tar = { version = "0.4.40" }
 serde = { version = "1.0.197", features = ["derive"] }
 sudo = "0.6.0"
 recolored = "1.9.3"
+cargo-deb = "2.0.6"

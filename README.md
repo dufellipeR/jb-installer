@@ -1,8 +1,8 @@
 
-![Logo]()
+![Logo](/assets/painite.png)
 
 
-# Painite
+# ♦️ Painite
 
 A cli tool that installs tar.gz JetBrains IDEs into Linux
 
