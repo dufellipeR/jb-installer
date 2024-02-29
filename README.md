@@ -1,6 +1,8 @@
+<div align="center">
 
 ![Logo](/assets/painiteII.png)
 
+</div>
 
 # ♦️ Painite
 
