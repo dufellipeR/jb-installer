@@ -1,5 +1,5 @@
 
-![Logo](/assets/painite.png)
+![Logo](/assets/painiteI.png)
 
 
 # ♦️ Painite
@@ -13,14 +13,20 @@ A cli tool that installs tar.gz JetBrains IDEs into Linux
 - Create symbolic link
 - Create destktop entry
 
+### Supported IDEs
+
+✓ IntelliJ IDEA\
+✓ Rust Rover\
+✓ Pycharm\
+✓ GoLand
+
 
 ## Installation
 
-Install my-project with npm
+Install with binaries
 
 ```bash
-  npm install my-project
-  cd my-project
+curl -LSfs https://japaric.github.io/trust/install.sh | sh -s -- --git your-name/repo-name
 ```
 
 ## Usage/Examples
@@ -42,7 +48,13 @@ sudo painite <gz_file_path>
 
 Contributions are always welcome!
 
-See `contributing.md` for ways to get started.
 
-Please adhere to this project's `code of conduct`.
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  cargo test --package painite --lib tests
+```
 
