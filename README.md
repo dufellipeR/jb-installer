@@ -1,5 +1,5 @@
 
-![Logo](/assets/painiteI.png)
+![Logo](/assets/painiteII.png)
 
 
 # ♦️ Painite
