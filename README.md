@@ -8,6 +8,11 @@
 
 A cli tool that installs tar.gz JetBrains IDEs into Linux
 
+<div align="center">
+
+![Usage](/assets/pntIII.gif)
+
+</div>
 
 ## Features
 
