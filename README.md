@@ -4,7 +4,7 @@
 
 </div>
 
-# ♦️ Painite
+# ♦️ painite
 
 A cli tool that installs tar.gz JetBrains IDEs into Linux
 
@@ -13,7 +13,7 @@ A cli tool that installs tar.gz JetBrains IDEs into Linux
 
 - Unpack .tar.gz files
 - Create symbolic link
-- Create destktop entry
+- Create desktop entry
 
 ### Supported IDEs
 

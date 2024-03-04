@@ -1,9 +1,0 @@
-{
-  "name":"GoLand",
-  "comment":"The complete IDE crafted for Gophers",
-  "short_name": "goland",
-  "exec": "",
-  "version": "",
-  "icon": "",
-  "hex_color": "0x7145fa"
-}

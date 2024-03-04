@@ -1,12 +1,17 @@
+mod utils;
+mod ides;
+
+
 use std::io::{self};
 use std::path::{PathBuf};
 use std::process;
-
 use clap::Parser;
+
 use recolored::Colorize;
 use sudo::{check, RunningAs};
+use crate::ides::IDE;
+use crate::utils::{create_directory, detect_ide, unpack_tar};
 
-use painite::{create_directory, Ide, unpack_tar};
 
 #[derive(Parser)]
 struct Cli {
@@ -39,7 +44,10 @@ fn main() -> io::Result<()>{
 
     let archive_name = unpack_tar(&args.gz_path, &default_jetbrains_path_directory)?;
 
-    let mut ide = Ide::new();
+    let mut ide: Box<dyn IDE> = detect_ide(&archive_name).unwrap_or_else(|err| {
+        println!("> unexpected error occurred {err} when trying to detect ide");
+        process::exit(1);
+    });
 
     ide.build(&archive_name, &default_jetbrains_path_directory).unwrap_or_else(|err| {
         println!("> Unexpected error occurred {err} when trying to build IDE");

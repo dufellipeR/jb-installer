@@ -1,9 +1,0 @@
-{
-  "name":"IntelliJ IDEA",
-  "comment":"the Leading Java and Kotlin IDE",
-  "short_name": "idea",
-  "exec": "",
-  "version": "",
-  "icon": "",
-  "hex_color": "0x1838b4"
-}
