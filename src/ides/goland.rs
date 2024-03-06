@@ -30,6 +30,8 @@ impl IDE for Goland {
         &self.entries
     }
 
+    fn get_color(&self) -> u64 { self.entries.hex_color }
+
     fn set_icon(&mut self, icon_path: String) {
         self.entries.icon = icon_path;
     }
@@ -47,7 +49,8 @@ impl Goland {
             icon: "".to_string(),
             exec: "".to_string(),
             short_name: "goland".to_string(),
-        }
+            hex_color: 0x7147f8,
+            }
         }
     }
 }

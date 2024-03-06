@@ -30,6 +30,8 @@ impl IDE for Pycharm {
         &self.entries
     }
 
+    fn get_color(&self) -> u64 { self.entries.hex_color }
+
     fn set_icon(&mut self, icon_path: String) {
         self.entries.icon = icon_path;
     }
@@ -48,6 +50,8 @@ impl Pycharm {
             icon: "".to_string(),
             exec: "".to_string(),
             short_name: "pycharm".to_string(),
-        } }
+            hex_color: 0x1dd2a2
+            }
+        }
     }
 }

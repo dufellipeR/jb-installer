@@ -30,6 +30,8 @@ impl IDE for Idea {
         &self.entries
     }
 
+    fn get_color(&self) -> u64 { self.entries.hex_color }
+
     fn set_icon(&mut self, icon_path: String) {
         self.entries.icon = icon_path;
     }
@@ -47,6 +49,8 @@ impl Idea {
             icon: "".to_string(),
             exec: "".to_string(),
             short_name: "idea".to_string(),
-        }}
+            hex_color: 0x573dc5,
+            }
+        }
     }
 }

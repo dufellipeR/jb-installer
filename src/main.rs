@@ -64,7 +64,7 @@ fn main() -> io::Result<()>{
     });
 
     println!("-----------------------------------------------");
-    println!("> {} {} installed", &ide.get_name().hex_color(0xc7059c), "successfully".green());
+    println!("> {} {} installed", &ide.get_name().hex_color(ide.get_color()).bold(), "successfully".green());
 
     Ok(())
 }

@@ -59,6 +59,8 @@ pub trait IDE {
     fn get_icon(&self) -> &String;
     fn get_entries(&self) -> &Entry;
 
+    fn get_color(&self) -> u64;
+
     fn set_icon(&mut self, icon_path: String);
     fn set_exec(&mut self, exec_path: String);
 
@@ -70,4 +72,5 @@ pub struct Entry {
     pub icon: String,
     pub exec: String,
     pub short_name: String,
+    pub hex_color: u64
 }
