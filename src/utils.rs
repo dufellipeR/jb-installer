@@ -7,7 +7,7 @@ use flate2::read::GzDecoder;
 use recolored::Colorize;
 use spinoff::{Color, Spinner, spinners};
 use tar::Archive;
-use crate::ides::{Entry, Goland, IDE, Idea, Pycharm, RustRover};
+use crate::ides::{Entry, Goland, IDE, Idea, Pycharm, RubyMine, RustRover};
 
 pub fn greeting() {
     println!("> Welcome to {} !", "Painite".true_color(128, 0,0).bold())
@@ -32,7 +32,9 @@ pub fn detect_ide(archive_name: &String) -> Result<Box<dyn IDE>, &'static str> {
         ide = Box::new(RustRover::new())
     } else if normalized_archive.contains("idea") {
         ide = Box::new(Idea::new())
-    } else {
+    } else if normalized_archive.contains("ruby"){
+        ide = Box::new(RubyMine::new())
+    } else  {
         return Err("> IDE not supported, symbolic link and desktop entry NOT created");
     }
 
@@ -135,5 +137,13 @@ mod tests {
         assert!(result.is_ok());
         let ide = result.unwrap();
         assert_eq!(ide.as_ref().get_short_name(), "rustrover");
+    }
+
+    #[test]
+    fn it_should_successfully_detect_rubymine() {
+        let result = detect_ide(&String::from("RubyMine-2023.3.4"));
+        assert!(result.is_ok());
+        let ide = result.unwrap();
+        assert_eq!(ide.as_ref().get_short_name(), "rubymine");
     }
 }
