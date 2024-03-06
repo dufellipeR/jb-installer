@@ -141,6 +141,6 @@ mod tests {
         let result = detect_ide(&String::from("RustRover-233.14015.147"));
         assert!(result.is_ok());
         let ide = result.unwrap();
-        assert_eq!(ide.as_ref().get_short_name(), "rover");
+        assert_eq!(ide.as_ref().get_short_name(), "rustrover");
     }
 }
