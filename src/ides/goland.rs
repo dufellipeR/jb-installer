@@ -1,7 +1,7 @@
-use crate::ides::{IDE, Entries};
+use crate::ides::{IDE, Entry};
 
 pub struct Goland {
-    entries: Entries,
+    entries: Entry,
 }
 
 impl IDE for Goland {
@@ -30,7 +30,7 @@ impl IDE for Goland {
         &self.entries.icon
     }
 
-    fn get_entries(&self) -> &Entries {
+    fn get_entries(&self) -> &Entry {
         &self.entries
     }
 
@@ -49,7 +49,7 @@ impl IDE for Goland {
 
 impl Goland {
     pub fn new() -> Self {
-        Goland{ entries: Entries {
+        Goland{ entries: Entry {
             name: "GoLand".to_string(),
             comment: "The complete IDE crafted for Gophers".to_string(),
             icon: "".to_string(),

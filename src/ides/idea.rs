@@ -1,7 +1,7 @@
-use crate::ides::{Entries, IDE};
+use crate::ides::{Entry, IDE};
 
 pub struct Idea {
-    entries: Entries,
+    entries: Entry,
 }
 
 impl IDE for Idea {
@@ -30,7 +30,7 @@ impl IDE for Idea {
         &self.entries.icon
     }
 
-    fn get_entries(&self) -> &Entries {
+    fn get_entries(&self) -> &Entry {
         &self.entries
     }
 
@@ -49,7 +49,7 @@ impl IDE for Idea {
 
 impl Idea {
     pub fn new() -> Self {
-        Idea{ entries: Entries {
+        Idea{ entries: Entry {
             name: "IntelliJ IDEA".to_string(),
             comment: "The Leading Java and Kotlin IDE".to_string(),
             icon: "".to_string(),

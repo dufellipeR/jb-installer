@@ -1,7 +1,7 @@
-use crate::ides::{Entries, IDE};
+use crate::ides::{Entry, IDE};
 
 pub struct Pycharm {
-    entries: Entries,
+    entries: Entry,
 }
 
 impl IDE for Pycharm {
@@ -30,7 +30,7 @@ impl IDE for Pycharm {
         &self.entries.icon
     }
 
-    fn get_entries(&self) -> &Entries {
+    fn get_entries(&self) -> &Entry {
         &self.entries
     }
 
@@ -50,7 +50,7 @@ impl IDE for Pycharm {
 
 impl Pycharm {
     pub fn new() -> Self {
-        Pycharm{ entries: Entries {
+        Pycharm{ entries: Entry {
             name: "PyCharm".to_string(),
             comment: "The Python IDE for Professional Developers".to_string(),
             icon: "".to_string(),

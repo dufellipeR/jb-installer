@@ -3,14 +3,14 @@ mod ides;
 
 
 use std::io::{self};
-use std::path::{PathBuf};
+use std::path::{Path, PathBuf};
 use std::process;
 use clap::Parser;
 
 use recolored::Colorize;
 use sudo::{check, RunningAs};
 use crate::ides::IDE;
-use crate::utils::{create_directory, detect_ide, unpack_tar};
+use crate::utils::{create_directory, detect_ide, greeting, unpack_tar};
 
 
 #[derive(Parser)]
@@ -28,14 +28,14 @@ fn main() -> io::Result<()>{
     match check() {
         RunningAs::Root => {},
         _ => {
-            println!("> The application needs SUDO permission to work properly\n> Try running with \"sudo\" command");
+            println!("> the application needs SUDO permission to work properly\n> Try running with \"sudo\" command");
             process::exit(1);
         },
     }
 
-    let default_jetbrains_path_directory = "/opt/JetBrains";
-    let default_symlink_path = "/usr/local/bin/";
-    let default_entry_path = "/usr/share/applications/";
+    let default_jetbrains_path_directory = Path::new("/opt/JetBrains");
+    let default_symlink_path = Path::new("/usr/bin/");
+    let default_entry_path = Path::new("/usr/share/applications/");
 
     create_directory(&default_jetbrains_path_directory).unwrap_or_else(|err| {
         println!("Unexpected error occurred {err} when trying to create directory");
@@ -49,7 +49,7 @@ fn main() -> io::Result<()>{
         process::exit(1);
     });
 
-    ide.build(&archive_name, &default_jetbrains_path_directory).unwrap_or_else(|err| {
+    ide.build(&archive_name, default_jetbrains_path_directory).unwrap_or_else(|err| {
         println!("> Unexpected error occurred {err} when trying to build IDE");
         process::exit(1)
     });
@@ -69,7 +69,4 @@ fn main() -> io::Result<()>{
     Ok(())
 }
 
-fn greeting() {
-    println!("> Welcome to {} !", "Painite".true_color(128, 0,0).bold())
-}
 

@@ -1,7 +1,7 @@
-use crate::ides::{Entries, IDE};
+use crate::ides::{Entry, IDE};
 
 pub struct RustRover {
-    entries: Entries,
+    entries: Entry,
 }
 
 impl IDE for RustRover {
@@ -30,7 +30,7 @@ impl IDE for RustRover {
         &self.entries.icon
     }
 
-    fn get_entries(&self) -> &Entries {
+    fn get_entries(&self) -> &Entry {
         &self.entries
     }
 
@@ -50,13 +50,13 @@ impl IDE for RustRover {
 
 impl RustRover {
     pub fn new() -> Self {
-        RustRover{ entries: Entries {
+        RustRover{ entries: Entry {
             name: "RustRover".to_string(),
             comment: "Focus on what matters".to_string(),
             icon: "".to_string(),
             exec: "".to_string(),
             version: "".to_string(),
-            short_name: "rover".to_string(),
+            short_name: "rustrover".to_string(),
         }}
     }
 }

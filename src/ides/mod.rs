@@ -8,4 +8,4 @@ pub use goland::Goland;
 pub use idea::Idea;
 pub use pycharm::Pycharm;
 pub use rustrover::RustRover;
-pub use ide::{IDE, Entries};
+pub use ide::{IDE, Entry};
