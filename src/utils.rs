@@ -14,16 +14,9 @@ pub fn greeting() {
 }
 
 pub fn generate_entry(entries: &Entry) -> String {
-    return format!("[Desktop Entry]\nVersion={}\nType=Application\nName={}\nIcon={}\
+    return format!("[Desktop Entry]\nType=Application\nName={}\nIcon={}\
     \nExec={}\nComment={}\nCategories=Development;IDE;\nTerminal=false\nStartupWMClass=jetbrains-{}"
-                   ,entries.version, entries.name, entries.icon, entries.exec,entries.comment, entries.short_name);
-}
-
-pub fn detect_version(archive_name: &str) -> String{
-    let parts: Vec<&str> = archive_name.split("-").collect();
-    let version: String = parts[parts.len() - 1].replace("/", "");
-
-    version
+                   , entries.name, entries.icon, entries.exec,entries.comment, entries.short_name);
 }
 
 pub fn detect_ide(archive_name: &String) -> Result<Box<dyn IDE>, &'static str> {
@@ -104,11 +97,10 @@ mod tests {
             comment: "The most testable IDE".to_string(),
             icon: "/test/pic.png".to_string(),
             exec: "/test/test.sh".to_string(),
-            version: "1.0.0".to_string(),
             short_name: "test".to_string(),
         };
 
-        assert_eq!(String::from("[Desktop Entry]\nVersion=1.0.0\nType=Application\nName=TesteIDE\nIcon=/test/pic.png\
+        assert_eq!(String::from("[Desktop Entry]\nType=Application\nName=TesteIDE\nIcon=/test/pic.png\
     \nExec=/test/test.sh\nComment=The most testable IDE\nCategories=Development;IDE;\nTerminal=false\nStartupWMClass=jetbrains-test"), generate_entry(&entry));
     }
 

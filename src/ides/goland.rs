@@ -14,10 +14,6 @@ impl IDE for Goland {
         &self.entries.comment
     }
 
-    fn get_version(&self) -> &String {
-        &self.entries.version
-    }
-
     fn get_short_name(&self) -> &String {
         &self.entries.short_name
     }
@@ -32,10 +28,6 @@ impl IDE for Goland {
 
     fn get_entries(&self) -> &Entry {
         &self.entries
-    }
-
-    fn set_version(&mut self, version: String) {
-        self.entries.version = version
     }
 
     fn set_icon(&mut self, icon_path: String) {
@@ -54,7 +46,6 @@ impl Goland {
             comment: "The complete IDE crafted for Gophers".to_string(),
             icon: "".to_string(),
             exec: "".to_string(),
-            version: "".to_string(),
             short_name: "goland".to_string(),
         }
         }
