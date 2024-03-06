@@ -98,6 +98,7 @@ mod tests {
             icon: "/test/pic.png".to_string(),
             exec: "/test/test.sh".to_string(),
             short_name: "test".to_string(),
+            hex_color: 0x000,
         };
 
         assert_eq!(String::from("[Desktop Entry]\nType=Application\nName=TesteIDE\nIcon=/test/pic.png\
