@@ -33,7 +33,7 @@ A cli tool that installs tar.gz JetBrains IDEs into Linux
 
 Install with binaries
 
-1- Visit the releases page.\
+1- Visit the [releases page](https://github.com/dufellipeR/painite/releases).\
 2- Look for the latest release (e.g., v1.0.0).\
 3- Download the binary to your preferred location (e.g., your home directory).
 
