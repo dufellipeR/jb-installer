@@ -33,18 +33,24 @@ A cli tool that installs tar.gz JetBrains IDEs into Linux
 
 Install with binaries
 
-```bash
-curl -LSfs https://japaric.github.io/trust/install.sh | sh -s -- --git your-name/repo-name
-```
+1- Visit the [releases page](https://github.com/dufellipeR/painite/releases).\
+2- Look for the latest release (e.g., v1.0.0).\
+3- Download the binary to your preferred location (e.g., your home directory).
 
 ## Usage/Examples
 
+1- Open a terminal and navigate to the directory where you downloaded the binary. Then give it permission to run:
+
 ```bash
-sudo painite <gz_file_path>
+chmod +x painite
+```
+2- Run the binary:
+```bash
+sudo ./painite <gz_file_path>
 
 > Welcome to Painite !
 > ✅ successfully created JetBrains directory
-> ✅ successfully unpacked IDE, took 109.65s
+> ✅ successfully unpacked IDE, took 18s
 > ✅ successfully created symbolic link
 > ✅ successfully created desktop entry
 -----------------------------------------------
@@ -54,8 +60,7 @@ sudo painite <gz_file_path>
 
 ## Contributing
 
-Contributions are always welcome!
-
+If you encounter any issues or have suggestions, feel free to open an issue on our GitHub repository.
 
 
 ## Running Tests
