@@ -23,8 +23,9 @@ A cli tool that installs tar.gz JetBrains IDEs into Linux
 ### Supported IDEs
 
 ✓ IntelliJ IDEA\
-✓ Rust Rover\
 ✓ Pycharm\
+✓ RubyMine\
+✓ Rust Rover\
 ✓ GoLand
 
 
@@ -62,6 +63,6 @@ Contributions are always welcome!
 To run tests, run the following command
 
 ```bash
-  cargo test --package painite --lib tests
+  cargo test
 ```
 
