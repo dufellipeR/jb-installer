@@ -22,21 +22,15 @@ pub fn generate_entry(entries: &Entry) -> String {
 pub fn detect_ide(archive_name: &String) -> Result<Box<dyn IDE>, &'static str> {
 
     let normalized_archive = archive_name.to_lowercase();
-    let ide: Box<dyn IDE>;
 
-    if normalized_archive.contains("go") {
-        ide = Box::new(Goland::new())
-    } else if normalized_archive.contains("py") {
-        ide = Box::new(Pycharm::new())
-    } else if normalized_archive.contains("rust") {
-        ide = Box::new(RustRover::new())
-    } else if normalized_archive.contains("idea") {
-        ide = Box::new(Idea::new())
-    } else if normalized_archive.contains("ruby"){
-        ide = Box::new(RubyMine::new())
-    } else  {
-        return Err("> IDE not supported, symbolic link and desktop entry NOT created");
-    }
+    let ide: Box<dyn IDE> = match normalized_archive {
+        s if s.contains("go") => Box::new(Goland::new()),
+        s if s.contains("py") => Box::new(Pycharm::new()),
+        s if s.contains("rust") => Box::new(RustRover::new()),
+        s if s.contains("idea") => Box::new(Idea::new()),
+        s if s.contains("ruby") => Box::new(RubyMine::new()),
+        _ => return Err("> IDE not supported, symbolic link and desktop entry NOT created"),
+    };
 
     Ok(ide)
 }
