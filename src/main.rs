@@ -4,13 +4,12 @@ mod ides;
 use std::io::{self};
 use std::path::{Path, PathBuf};
 use std::process;
-use clap::Parser;
 
+use clap::Parser;
 use recolored::Colorize;
 use sudo::{check, RunningAs};
 use crate::ides::IDE;
 use crate::utils::{create_directory, detect_ide, greeting, unpack_tar};
-
 
 #[derive(Parser)]
 struct Cli {
@@ -20,10 +19,8 @@ struct Cli {
 fn main() -> io::Result<()>{
     let args = Cli::parse();
 
-    // welcome message
     greeting();
 
-    // checking privileges
     match check() {
         RunningAs::Root => {},
         _ => {

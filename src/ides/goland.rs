@@ -1,11 +1,15 @@
 use crate::ides::{IDE, Entry};
+use crate::ides::ide::{Buildable, EntryCreator, Readable, SymlinkCreator, Writable};
 
 pub struct Goland {
     entries: Entry,
 }
 
-impl IDE for Goland {
+impl Buildable for Goland {}
+impl EntryCreator for Goland {}
+impl SymlinkCreator for Goland {}
 
+impl Readable for Goland {
     fn get_name(&self) -> &String {
         &self.entries.name
     }
@@ -31,7 +35,9 @@ impl IDE for Goland {
     }
 
     fn get_color(&self) -> u64 { self.entries.hex_color }
+}
 
+impl Writable for Goland {
     fn set_icon(&mut self, icon_path: String) {
         self.entries.icon = icon_path;
     }
@@ -40,6 +46,8 @@ impl IDE for Goland {
         self.entries.exec = exec_path
     }
 }
+
+impl IDE for Goland {}
 
 impl Goland {
     pub fn new() -> Self {

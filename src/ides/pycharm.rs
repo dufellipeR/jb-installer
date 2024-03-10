@@ -1,11 +1,15 @@
 use crate::ides::{Entry, IDE};
+use crate::ides::ide::{Buildable, EntryCreator, Readable, SymlinkCreator, Writable};
 
 pub struct Pycharm {
     entries: Entry,
 }
 
-impl IDE for Pycharm {
+impl Buildable for Pycharm {}
+impl EntryCreator for Pycharm {}
+impl SymlinkCreator for Pycharm {}
 
+impl Readable for Pycharm {
     fn get_name(&self) -> &String {
         &self.entries.name
     }
@@ -31,7 +35,9 @@ impl IDE for Pycharm {
     }
 
     fn get_color(&self) -> u64 { self.entries.hex_color }
+}
 
+impl Writable for Pycharm {
     fn set_icon(&mut self, icon_path: String) {
         self.entries.icon = icon_path;
     }
@@ -39,8 +45,10 @@ impl IDE for Pycharm {
     fn set_exec(&mut self, exec_path: String) {
         self.entries.exec = exec_path
     }
-
 }
+
+impl IDE for Pycharm {}
+
 
 impl Pycharm {
     pub fn new() -> Self {

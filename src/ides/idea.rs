@@ -1,11 +1,15 @@
 use crate::ides::{Entry, IDE};
+use crate::ides::ide::{Buildable, EntryCreator, Readable, SymlinkCreator, Writable};
 
 pub struct Idea {
     entries: Entry,
 }
 
-impl IDE for Idea {
+impl Buildable for Idea {}
+impl EntryCreator for Idea {}
+impl SymlinkCreator for Idea {}
 
+impl Readable for Idea {
     fn get_name(&self) -> &String {
         &self.entries.name
     }
@@ -31,7 +35,9 @@ impl IDE for Idea {
     }
 
     fn get_color(&self) -> u64 { self.entries.hex_color }
+}
 
+impl Writable for Idea {
     fn set_icon(&mut self, icon_path: String) {
         self.entries.icon = icon_path;
     }
@@ -40,6 +46,8 @@ impl IDE for Idea {
         self.entries.exec = exec_path
     }
 }
+
+impl IDE for Idea {}
 
 impl Idea {
     pub fn new() -> Self {
